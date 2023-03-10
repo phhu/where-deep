@@ -1,4 +1,8 @@
-import { whereEq, map, where, equals } from 'ramda'
+import { map, where, equals, any ,all, curry} from 'ramda'
+
+const arrayWhere = curry( 
+  (spec,source) => all(specEl => any(specEl, source), spec) 
+)
 
 const byType = val => {
 
@@ -10,8 +14,10 @@ const byType = val => {
       break;
     case "object":
       if (Array.isArray(val)){
-        // handle array
-      } else if (val===null){
+        // week version where array elements are replaced, so don't need
+        // to do permutations
+        return arrayWhere(map(byType,val))
+      } else if (val===null){ 
         return equals(val)
       } else {
         return where(map(byType,val))
