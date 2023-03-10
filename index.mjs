@@ -1,42 +1,36 @@
-import { map, where, equals, any ,all, curry} from 'ramda'
-
-const arrayWhere = curry( 
-  (spec,source) => all(specEl => any(specEl, source), spec) 
-)
+import { 
+  map, where, equals
+} from 'ramda'
+import {
+  arrayWhereStrongUnordered
+} from './arrayWhere.mjs'
 
 const byType = val => {
-
+  let ret
   switch (typeof val){
     case "string":
     case "number":
     case "boolean":
-      return equals(val)
+      ret = equals(val)
       break;
     case "object":
       if (Array.isArray(val)){
-        // week version where array elements are replaced, so don't need
-        // to do permutations
-        return arrayWhere(map(byType,val))
+        ret = arrayWhereStrongUnordered({originalValues:val},map(byType,val))
       } else if (val===null){ 
-        return equals(val)
-      } else {
-        return where(map(byType,val))
+        ret = equals(val)
+      } else {        // assume a regular object
+        ret = where(map(byType,val))
       }
       break;
     case "function":
-    default: 
+    default:
+      ret = x=> false  // don't  
       break;
   }
+  //ret.originalValue = val    // keep track of the original value on the function returned
+  return ret
 }
 
-
-// export const whereDeep = (spec, source) => {
-//   return whereEq(spec, source)
-// }
-
-export const whereDeep2 = (spec, source) => {
-  console.log(map(byType,spec))
-  return where(map(byType,spec), source)
-}
-
+export const whereDeep = (spec, source) =>
+  where(map(byType,spec), source)
 
