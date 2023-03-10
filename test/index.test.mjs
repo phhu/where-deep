@@ -2,12 +2,12 @@ import { expect } from 'chai'
 import * as WD from '../index.mjs'
 
 const source = {
-  ae: [],
-  a1: [1],
-  a2: [1, 2],
+  //ae: [],
+  //a1: [1],
+  //a2: [1, 2],
   b: true,
   n: 1,
-  o: {},
+  o: {p:1,q:"two",x:3},
   s: 'str',
   z: null,
 }
@@ -23,12 +23,13 @@ const test = fnName => {
   const T = fn("true")
   const F = fn("false")
 
-  T({ s: 'str', b: true })
-  T({ s: 'strx', b: true })
-  F({ s: 'strx', b: false })
+  // T({ s: 'str', b: true })
+  // T({ s: 'str', b: true })
+  // F({ s: 'strx', b: false })
+  F({ s: 'str', b: true, o:{p:1,q:"two",x:1} }) 
+  T({ s: 'str', b: true, o:{p:1,q:"two"} })  
   
 }
-
 
 describe('test', () => {
   for (const key in WD) {
