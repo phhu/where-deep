@@ -29,11 +29,10 @@ export const arrayWhereStrongUnordered = curry(
 
     const originalValueMap = new Map(zip(spec, originalValues))
     const [specObjs, specVals] = partition(
-      x => is(Object, originalValueMap.get(x)), 
+      x => is(Object, originalValueMap.get(x)),
       spec
     )
-
-    //console.log({specObjs, specVals, originalValues, originalValueMap})
+    // console.log({specObjs, specVals, originalValues, originalValueMap})
 
     // values are fungible, so don't need to be permutated
     for (const test of specVals) {

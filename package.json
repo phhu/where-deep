@@ -1,11 +1,12 @@
 {
   "name": "where-deep",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "testmon": "nodemon --watch . --exec 'mocha ./test || true'"
+    "testmon": "nodemon --watch . --exec 'mocha ./test || true'",
+    "tidy": "standard --fix"
   },
   "author": "",
   "license": "ISC",
