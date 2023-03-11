@@ -1,3 +1,5 @@
+// see https://stackoverflow.com/questions/9960908/permutations-in-javascript
+
 export function * permute (permutation) {
   const length = permutation.length
   const c = Array(length).fill(0)
@@ -18,4 +20,4 @@ export function * permute (permutation) {
       ++i
     }
   }
-}
+} 

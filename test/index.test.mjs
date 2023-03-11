@@ -1,4 +1,5 @@
 import { expect } from 'chai'
+import { equals } from 'ramda'
 import * as WD from '../index.mjs'
 
 const source = {
@@ -15,17 +16,16 @@ const source = {
 
 const test = fnName => {
   const fn = res => filter => it(
-    `${fnName}: ${JSON.stringify(filter)}`,
-    () => {
-      expect(WD[fnName](filter, source))[res]
-    }
+    `${fnName}: ${res} - ${JSON.stringify(filter)}`,
+    () => expect(WD[fnName]({},filter, source))[res]
   )
+
   const T = fn('true')
   const F = fn('false')
 
   T({ s: 'str', b: true })
   T({ s: 'str', b: true })
-  F({ s: 'strx', b: false })
+  F({ s: 'strx', b: true})
   F({ s: 'str', b: true, o: { p: 1, q: 'two', x: 1 } })
   T({ s: 'str', b: true, o: { p: 1, q: 'two' } })
   F({ s: 'str', b: true, o: { p: 2, q: 'two' } })
@@ -55,10 +55,24 @@ const test = fnName => {
   T({ a1: [] })
   T({ a1: [1] })
   F({ a1: [2] })
+
+  T({ s: /str/ })  
+  T({ s: equals("str") })  
+
 }
 
-describe('test', () => {
+
+  console.log("source",source)
   for (const key in WD) {
-    test(key)
+    describe(
+      `Testing ${key}`, 
+      () => test(key)
+    )
   }
-})
+
+  describe("degenerates", ()=>{
+    it("str",()=>{
+      expect(WD.whereDeep({},"test","test")).true
+      expect(WD.whereDeep({},"testa","test")).false
+    })
+  })

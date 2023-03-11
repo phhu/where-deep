@@ -5,11 +5,11 @@ import {
 import { permute } from './permutate.mjs'
 
 export const arrayWhereWeak = curry(
-  (spec, source) => all(specEl => any(specEl, source), spec)
+  ({ originalValues }, spec, src) => all(specEl => any(specEl, src), spec)
 )
 
 export const arrayWhereStrongOrdered = curry(
-  (spec, src) => {
+  ({ originalValues }, spec, src) => {
     const rmSrc = clone(src)
     for (const test of spec) {
       const idx = findIndex(test, rmSrc)
@@ -17,7 +17,6 @@ export const arrayWhereStrongOrdered = curry(
         return false
       } else {
         rmSrc.splice(idx, 1)
-        // src = remove(idx,1,src)
       }
     }
     return true
@@ -29,9 +28,12 @@ export const arrayWhereStrongUnordered = curry(
     const rmSrc = clone(src)
 
     const originalValueMap = new Map(zip(spec, originalValues))
-    const [specObjs, specVals] = partition(x => is(Object, originalValueMap.get(x)), spec)
+    const [specObjs, specVals] = partition(
+      x => is(Object, originalValueMap.get(x)), 
+      spec
+    )
 
-    // console.log({specObjs, specVals, originalValues, originalValueMap})
+    //console.log({specObjs, specVals, originalValues, originalValueMap})
 
     // values are fungible, so don't need to be permutated
     for (const test of specVals) {
