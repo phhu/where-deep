@@ -4,11 +4,15 @@ import {
 } from 'ramda'
 import { permute } from './permutate.mjs'
 
-export const arrayWhereWeak = curry(
+export const arrayWhereWithReplacement = curry(
   ({ originalValues }, spec, src) => all(specEl => any(specEl, src), spec)
 )
 
-export const arrayWhereStrongOrdered = curry(
+export const arrayWhereAny = curry(
+  ({ originalValues }, spec, src) => any(specEl => any(specEl, src), spec)
+)
+
+export const arrayWhereAllOrdered = curry(
   ({ originalValues }, spec, src) => {
     const rmSrc = clone(src)
     for (const test of spec) {
@@ -23,7 +27,7 @@ export const arrayWhereStrongOrdered = curry(
   }
 )
 
-export const arrayWhereStrongUnordered = curry(
+export const arrayWhereAllUnordered = curry(
   ({ originalValues }, spec, src) => {
     const rmSrc = clone(src)
 
@@ -51,15 +55,17 @@ export const arrayWhereStrongUnordered = curry(
     const srcObjs = filter(is(Object), src) // we can only match objects
     for (const tests of permute(specObjs)) {
       const pRmSrc = clone(srcObjs) //
+      let permutationResult = true
       for (const test of tests) {
         const idx = findIndex(x => test(x), pRmSrc)
         if (idx === -1) {
+          permutationResult = false
           break // item not found, so move on to next permutation
         } else {
           pRmSrc.splice(idx, 1) // remove the matching items
         }
-        return true // the permutation passes, so return true
       }
+      if (permutationResult === true) { return true } // the permutation passes, so don't check any more
     }
     return false // no perumation passed
   }

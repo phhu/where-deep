@@ -1,9 +1,11 @@
 import {
-  where, equals, curry, mapObjIndexed, append, type, test, toString
+  where, equals, curry, mapObjIndexed, append, type, test, is, toString
 } from 'ramda'
 import {
-  arrayWhereStrongUnordered // arrayWhereStrongOrdered, arrayWhereWeak
+  arrayWhereAllUnordered
 } from './arrayWhere.mjs'
+
+export  * from './arrayWhere.mjs'
 
 const mapByType = (fn, obj) => {
   switch (type(obj)) {
@@ -27,17 +29,23 @@ const mapByType = (fn, obj) => {
 const fnByType =
   ({
     path: inPath = [],
-    arrayWhere = arrayWhereStrongUnordered,
+    arrayWhere = arrayWhereAllUnordered,
     objectWhere = where,
     stringEquals = equals,
     numberEquals = equals,
     booleanEquals = equals,
+    nullEquals = equals
   } = {}) =>
     (val, key, srcObj) => {
       const path = append(key, inPath)
-      const mappedWithFns = () => mapByType(fnByType({ 
-        path, arrayWhere, objectWhere,
-        stringEquals, numberEquals, booleanEquals,
+      const mappedWithFns = () => mapByType(fnByType({
+        path,
+        arrayWhere,
+        objectWhere,
+        stringEquals,
+        numberEquals,
+        booleanEquals,
+        nullEquals
       }), val)
       switch (type(val)) {
         case 'Array':
@@ -56,9 +64,9 @@ const fnByType =
         case 'Boolean':
           return booleanEquals(val)
         case 'Null':
-          return equals(val)
+          return nullEquals(val)
         case 'RegExp':
-          return x => test(val, toString(x))
+          return x => test(val, is(String,x) ? x : toString(x))  
         case 'Function':
           return val // allow functions to override default behaviour
         case 'Undefined':
@@ -71,26 +79,37 @@ const fnByType =
 export const whereDeep = curry(
   (
     {
-      arrayWhere = arrayWhereStrongUnordered,
+      arrayWhere = arrayWhereAllUnordered,
       objectWhere = where,
       stringEquals = equals,
       numberEquals = equals,
       booleanEquals = equals,
+      nullEquals = equals
     },
     spec,
     source
-  ) => where(
-    mapByType(
-      fnByType({ 
-        path: [], 
-        arrayWhere, 
-        objectWhere, 
-        stringEquals: curry(stringEquals), 
-        numberEquals: curry(numberEquals), 
-        booleanEquals: curry(booleanEquals),
-      }),
-      [spec] // *
-    ),
-    [source] // * wrapping in array protects against dubious R.where behaviour with degenerates
-  )
+  ) => {
+    try {
+      return where(
+        mapByType(
+          fnByType({
+            path: [],
+            arrayWhere,
+            objectWhere,
+            stringEquals: curry(stringEquals),
+            numberEquals: curry(numberEquals),
+            booleanEquals: curry(booleanEquals),
+            nullEquals: curry(nullEquals)
+          }),
+          [spec] // *
+        ),
+        [source] // * wrapping in array protects against dubious R.where behaviour with degenerates
+      )
+    } catch (e) {
+      console.error("whereDeep error", e)
+      return null
+    }
+  }
 )
+
+export default whereDeep

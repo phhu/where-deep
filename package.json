@@ -1,14 +1,16 @@
 {
   "name": "where-deep",
   "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
+  "description": "A deep (recursive) version of Ramda.js's where and whereEq, allowing nested JSON-like structures to be used as predicates (for filtering and so on) for use on similar JSON-like structures",
+  "main": "index.mjs",
+  "type": "module",
   "scripts": {
     "test": "mocha",
     "testmon": "nodemon --watch . --exec 'mocha ./test || true'",
-    "tidy": "standard --fix"
+    "tidy": "standard --fix",
+    "publish": "np"
   },
-  "author": "",
+  "author": "phhu@gmail.com",
   "license": "ISC",
   "dependencies": {
     "ramda": "^0.28.0"
