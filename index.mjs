@@ -1,5 +1,6 @@
 import {
-  where, equals, curry, mapObjIndexed, append, type, test, is, toString
+  where, equals, curry, mapObjIndexed, append, 
+  type, test, is, toString, tryCatch
 } from 'ramda'
 import {
   arrayWhereAllUnordered
@@ -84,7 +85,11 @@ export const whereDeep = curry(
       stringEquals = equals,
       numberEquals = equals,
       booleanEquals = equals,
-      nullEquals = equals
+      nullEquals = equals,
+      errorHandler = (e) => {
+        // console.error("whereDeep error", e)
+        return false    // 
+      }
     },
     spec,
     source
@@ -106,8 +111,7 @@ export const whereDeep = curry(
         [source] // * wrapping in array protects against dubious R.where behaviour with degenerates
       )
     } catch (e) {
-      console.error("whereDeep error", e)
-      return null
+      return errorHandler(e)
     }
   }
 )

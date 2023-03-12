@@ -27,7 +27,7 @@ const F = false
 const test = (
   opts, value, spec, src = source
 ) => it(
-  `${value ? 'T' : 'F'}: ${JSON.stringify(spec)} = ${src === source ? '[source]' : JSON.stringify(src)}`,
+  `${value === true ? 'T' : value === false ? 'F': value}: ${JSON.stringify(spec)} = ${src === source ? '[source]' : JSON.stringify(src)}`,
   () => expect(
     whereDeep(opts, spec, src)
   ).equal(value)
@@ -164,4 +164,15 @@ describe('booleanEquals - force source to boolean', () => {
   test(opts, T, false, false)
   test(opts, T, false, 0)
   test(opts, F, false, 1)
+})
+
+describe('error handling', () => {
+  const opts = {
+    errorHandler: (e) => {
+      //console.error("whereDeep error", e)
+      return "fail"
+    }
+  }
+  test({}, false, {a:{b:2}}, { })
+  test(opts, "fail", {a:{b:2}}, { x: 1 })
 })
