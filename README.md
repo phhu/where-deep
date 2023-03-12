@@ -9,6 +9,7 @@ An options object allows overriding of default `where...` functions used with ob
 # Synopsis
 
 ```js
+// npm install where-deep
 import * as R from 'ramda';
 import {
   whereDeep, 
