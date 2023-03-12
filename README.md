@@ -24,6 +24,7 @@ const opts = {
   // numberEquals: R.equals
   // booleanEquals: R.equals
   // nullEquals: R.equals
+  // errorHandler: e => false
 };
 const spec = {
   a: 1,
