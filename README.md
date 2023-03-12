@@ -1,4 +1,4 @@
-A deep version of Ramda's `whereEq` and `where`, allowing JSON-like declarative predicates for filtering functions etc. 
+A deep version of Ramda's `whereEq` and `where` ([docs](https://ramdajs.com/docs/#where)), allowing JSON-like declarative predicates for filtering functions etc. 
 
 Nested arrays and objects can be included in the spec. This allows the spec object to have the same shape (and to be a subset of) the test object, meaning you can just copy and trim its JSON representation to make a filter.
 
@@ -42,4 +42,5 @@ See test/examples.test.mjs
 
 # References
 
-* https://ramdajs.com/docs/#where
+* Ramda where: https://ramdajs.com/docs/#where
+* NPM: https://www.npmjs.com/package/where-deep

@@ -16,6 +16,16 @@
     "index.mjs",
     "package.json"
   ],
+  "keywords": [
+    "JSON",
+    "ramda",
+    "where",
+    "deep",
+    "filter",
+    "FP",
+    "Functional programming",
+    "predicate"
+  ],
   "author": "phhu.git@gmail.com",
   "repository": {
     "type": "git",
