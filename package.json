@@ -10,8 +10,22 @@
     "tidy": "standard --fix",
     "publish": "np"
   },
-  "author": "phhu@gmail.com",
-  "license": "ISC",
+  "files": [
+    "arrayWhere.mjs",
+    "permutate.mjs",
+    "index.mjs",
+    "package.json"
+  ],
+  "author": "phhu.git@gmail.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phhu/where-deep.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/phhu/where-deep/issues"
+  },
+  "homepage": "https://github.com/phhu/where-deep#readme",
   "dependencies": {
     "ramda": "^0.28.0"
   },
