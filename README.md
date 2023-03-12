@@ -9,15 +9,16 @@ An options object allows overriding of default `where...` functions used with ob
 # Synopsis
 
 ```js
+import * as R from 'ramda';
 import {
   whereDeep, 
   arrayWhereAllUnordered, arrayWhereAllOrdered, 
   arrayWhereAny, arrayWhereWithReplacement
 } from 'where-deep';
-// import whereDeep from 'where-deep'; // also default export
+// import whereDeep from 'where-deep'; // default import 
 const opts = {
   // arrayWhere: arrayWhereAllUnordered   
-  // objectWhere: R.where    // or R.whereAny
+  // objectWhere: R.where    // R.whereAny also possible
   // stringEquals: R.equals  
   // numberEquals: R.equals
   // booleanEquals: R.equals
@@ -32,13 +33,17 @@ const testObj = {
   b: 2,
   c: [{d:4, e:5},{d:"six"}]
 };
-whereDeep(opts, spec, testObj);   // true 
-filter(whereDeep(opts, {c:[{d:"seven"}]}), [testObj]);   // []
+whereDeep(opts, spec, testObj);  // true 
+R.filter( whereDeep(opts, {c: [{d: "seven"}] }), [testObj] );  // []
+R.filter( whereDeep(opts, {
+  b: x => x>1,
+  c: [ {d: /(six|seven)/i} ]
+}), [testObj] );   // [testObj]
 ```
 
 # Examples
 
-See test/examples.test.mjs
+See [test/examples.test.mjs](https://github.com/phhu/where-deep/blob/main/test/examples.test.mjs)
 
 # References
 
