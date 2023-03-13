@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { equals, whereAny, toLower } from 'ramda'
+import { equals, whereAny, toLower, where , whereEq, toUpper} from 'ramda'
 import { whereDeep } from '../index.mjs'
 import * as AW from '../arrayWhere.mjs'
 
@@ -175,4 +175,36 @@ describe('error handling', () => {
   }
   test({}, false, {a:{b:2}}, { })
   test(opts, "fail", {a:{b:2}}, { x: 1 })
+})
+
+// https://github.com/ramda/ramda/issues/1032
+describe('edge case: array prototype modification', () => {
+  Array.prototype.fooObj = {}
+  Array.prototype.barFunc = function() {}
+  const arrayHasObject = {fooObj: Array.prototype.fooObj}
+  const arrayHasFunc = {barFunc: Array.prototype.barFunc}
+
+  test({}, true, arrayHasObject , [])
+  test({}, false, arrayHasFunc, [])      // inconsistent!
+  test({allowFunctions: false}, true, arrayHasFunc, [])     // switch to override the inconsistency
+
+  it("where case obj", ()=>{ expect(where(equals(arrayHasObject), [])).true })
+  it("where case Func",()=>{ expect(where(arrayHasFunc,   [])).false })  
+  it("whereEq case obj", ()=>{ expect(whereEq(arrayHasObject, [])).true })
+  it("whereEq case Func",()=>{ expect(whereEq(arrayHasFunc,   [])).true })
+
+})
+
+describe('allowRegExp flag', () => {
+  const t = [{a:/a/} , {a:"aa"}]
+  test({}, true, ...t)
+  test({allowRegExp: true}, true, ...t)
+  test({allowRegExp: false}, false, ...t)
+})
+
+describe('allowFunctions flag', () => {
+  const t = [{a:x=>toUpper(x)==="AA"} , {a:"aa"}]
+  test({}, true, ...t)
+  test({allowFunctions: true}, true, ...t)
+  test({allowFunctions: false}, false, ...t)
 })

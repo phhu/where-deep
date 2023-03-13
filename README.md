@@ -2,7 +2,7 @@ A deep version of Ramda's `whereEq` and `where` ([docs](https://ramdajs.com/docs
 
 Nested arrays and objects can be included in the spec. This allows the spec object to have the same shape (and to be a subset of) the test object, meaning you can just copy and trim its JSON representation to make a filter.
 
-Values in the spec will be tested using ramda's `equals` (as with `whereEq`). Functions can also be included, as per `where`. RegExp literals can be used to test values (as strings).
+Values in the spec will be tested using ramda's `equals` (as with `whereEq`). By default, functions can also be included, as per `where`, and RegExp literals can be used to test values (as strings).
 
 An options object allows overriding of default `where...` functions used with objects and arrays; and default `equals` functions used with values (strings, numbers, booleans and nulls). 
 
@@ -25,6 +25,8 @@ const opts = {
   // booleanEquals: R.equals
   // nullEquals: R.equals
   // errorHandler: e => false
+  // allowFunctions: true
+  // allowRegExp: true
 };
 const spec = {
   a: 1,
