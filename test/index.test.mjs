@@ -223,5 +223,6 @@ describe('arrayWithFuncs', () => {
     test(opts, false, { a: [x => x === 4] }, { a: [1, 2, 3] })
     test({ allowFunctions: false, ...opts }, false, { a: [x => x === 1] }, { a: [1, 2, 3] })
   }
+  test({ arrayWhere: AW.arrayWhereAllOrdered }, false, { a: [x=>x===2,x=>x===1] }, { a: [1, 2, 3] })
   test({ arrayWhere: AW.arrayWhereAny }, true, { a: [x => x === 4, x => x === 1] }, { a: [1, 2, 3] })
 })

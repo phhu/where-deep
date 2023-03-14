@@ -20,7 +20,8 @@ export const arrayWhereAllOrdered = curry(
       if (idx === -1) {
         return false
       } else {
-        rmSrc.splice(idx, 1)
+        rmSrc.splice(0,idx+1)
+        // rmSrc.splice(idx, 1)
       }
     }
     return true
