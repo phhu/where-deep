@@ -1,6 +1,6 @@
 import {
   where, equals, curry, mapObjIndexed, append,
-  type, test, is, toString, tryCatch
+  type, test, is, toString
 } from 'ramda'
 import {
   arrayWhereAllUnordered
@@ -8,7 +8,7 @@ import {
 
 export * from './arrayWhere.mjs'
 
-const mapByType = (fn, obj) => {
+export const mapByType = (fn, obj) => {
   switch (type(obj)) {
     case 'Array':
       return obj.map(fn) // native arr.map provides (val, key, srcObj)
@@ -37,7 +37,7 @@ const fnByType =
     booleanEquals = equals,
     nullEquals = equals,
     allowFunctions = true,
-    allowRegExp = true,
+    allowRegExp = true
   } = {}) =>
     (val, key, srcObj) => {
       const path = append(key, inPath)
@@ -50,7 +50,7 @@ const fnByType =
         booleanEquals,
         nullEquals,
         allowFunctions,
-        allowRegExp,
+        allowRegExp
       }), val)
       switch (type(val)) {
         case 'Array':
@@ -81,7 +81,6 @@ const fnByType =
       }
     }
 
-
 /**
  * Takes an options object, a  spec object and a test object; returns true if the test satisfies
  * the spec. Allows nesting of arrays and objects in the spec.
@@ -94,9 +93,9 @@ const fnByType =
  * @return {Boolean}
  * @example
  * const opts = {
- *    // arrayWhere: arrayWhereAllUnordered   
- *    // objectWhere: R.where  
- *    // stringEquals: R.equals  
+ *    // arrayWhere: arrayWhereAllUnordered
+ *    // objectWhere: R.where
+ *    // stringEquals: R.equals
  *    // numberEquals: R.equals
  *    // booleanEquals: R.equals
  *    // nullEquals: R.equals
@@ -109,7 +108,7 @@ const fnByType =
  *    b: 2,
  *    c: [{d:4, e:5},{d:"six"}]
  *  };
- *  whereDeep(opts, {a: 1, c: [{d:4}] }, testObj);  // true 
+ *  whereDeep(opts, {a: 1, c: [{d:4}] }, testObj);  // true
  */
 export const whereDeep = curry(
   (
@@ -142,7 +141,7 @@ export const whereDeep = curry(
             booleanEquals: curry(booleanEquals),
             nullEquals: curry(nullEquals),
             allowFunctions,
-            allowRegExp,
+            allowRegExp
           }),
           [spec] // *
         ),

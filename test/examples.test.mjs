@@ -27,10 +27,10 @@ describe('example', () => {
     {
       name: { first: 'Paddington', last: 'Bear' },
       tags: [
-        { name: 'Marmalade', count: 2, comment: "in sandwiches" },
+        { name: 'Marmalade', count: 2, comment: 'in sandwiches' },
         { name: 'Friends', count: 2 }
       ],
-      company: "not used"
+      company: 'not used'
     }
   ]
 
@@ -40,7 +40,7 @@ describe('example', () => {
     }]
     expect(whereDeep({}, search, source)).true
   })
- 
+
   it('example 2', () => {
     const search = {
       name: { last: 'Person' },
@@ -70,8 +70,8 @@ describe('example', () => {
   it('example 5 - using function overrides', () => {
     const opts = {
       arrayWhere: arrayWhereAny,
-      stringEquals: (a, b) => equals(toLower(a), toLower(b)),   // caseInsensitive
-      numberEquals: n => x => x >= n    // at least by default on numbers
+      stringEquals: (a, b) => equals(toLower(a), toLower(b)), // caseInsensitive
+      numberEquals: n => x => x >= n // at least by default on numbers
     }
     const search = {
       tags: [

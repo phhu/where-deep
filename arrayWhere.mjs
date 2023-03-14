@@ -1,6 +1,6 @@
 import {
-  any, all, curry, filter,
-  clone, findIndex, is, partition, zip
+  any, all, curry, filter, type,
+  clone, findIndex, is, partition, zip, includes
 } from 'ramda'
 import { permute } from './permutate.mjs'
 
@@ -33,7 +33,7 @@ export const arrayWhereAllUnordered = curry(
 
     const originalValueMap = new Map(zip(spec, originalValues))
     const [specObjs, specVals] = partition(
-      x => is(Object, originalValueMap.get(x)),
+      x => includes(type(originalValueMap.get(x)), ['Array', 'Object']), // is(Object, originalValueMap.get(x)),
       spec
     )
     // console.log({specObjs, specVals, originalValues, originalValueMap})

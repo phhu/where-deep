@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { equals, whereAny, toLower, where , whereEq, toUpper} from 'ramda'
+import { equals, whereAny, toLower, where, whereEq, toUpper, toString } from 'ramda'
 import { whereDeep } from '../index.mjs'
 import * as AW from '../arrayWhere.mjs'
 
@@ -27,7 +27,7 @@ const F = false
 const test = (
   opts, value, spec, src = source
 ) => it(
-  `${value === true ? 'T' : value === false ? 'F': value}: ${JSON.stringify(spec)} = ${src === source ? '[source]' : JSON.stringify(src)}`,
+  `${value === true ? 'T' : value === false ? 'F' : value}: ${toString(spec)} = ${src === source ? '[source]' : toString(src)}`,
   () => expect(
     whereDeep(opts, spec, src)
   ).equal(value)
@@ -169,42 +169,59 @@ describe('booleanEquals - force source to boolean', () => {
 describe('error handling', () => {
   const opts = {
     errorHandler: (e) => {
-      //console.error("whereDeep error", e)
-      return "fail"
+      // console.error("whereDeep error", e)
+      return 'fail'
     }
   }
-  test({}, false, {a:{b:2}}, { })
-  test(opts, "fail", {a:{b:2}}, { x: 1 })
+  test({}, false, { a: { b: 2 } }, { })
+  test(opts, 'fail', { a: { b: 2 } }, { x: 1 })
 })
 
 // https://github.com/ramda/ramda/issues/1032
 describe('edge case: array prototype modification', () => {
   Array.prototype.fooObj = {}
-  Array.prototype.barFunc = function() {}
-  const arrayHasObject = {fooObj: Array.prototype.fooObj}
-  const arrayHasFunc = {barFunc: Array.prototype.barFunc}
+  Array.prototype.barFunc = function () {}
+  const arrayHasObject = { fooObj: Array.prototype.fooObj }
+  const arrayHasFunc = { barFunc: Array.prototype.barFunc }
 
-  test({}, true, arrayHasObject , [])
-  test({}, false, arrayHasFunc, [])      // inconsistent!
-  test({allowFunctions: false}, true, arrayHasFunc, [])     // switch to override the inconsistency
+  test({}, true, arrayHasObject, [])
+  test({}, false, arrayHasFunc, []) // inconsistent!
+  test({ allowFunctions: false }, true, arrayHasFunc, []) // switch to override the inconsistency
 
-  it("where case obj", ()=>{ expect(where(equals(arrayHasObject), [])).true })
-  it("where case Func",()=>{ expect(where(arrayHasFunc,   [])).false })  
-  it("whereEq case obj", ()=>{ expect(whereEq(arrayHasObject, [])).true })
-  it("whereEq case Func",()=>{ expect(whereEq(arrayHasFunc,   [])).true })
-
+  it('where case obj', () => expect(where(equals(arrayHasObject), [])).true)
+  it('where case Func', () => expect(where(arrayHasFunc, [])).false)
+  it('whereEq case obj', () => expect(whereEq(arrayHasObject, [])).true)
+  it('whereEq case Func', () => expect(whereEq(arrayHasFunc, [])).true)
 })
 
 describe('allowRegExp flag', () => {
-  const t = [{a:/a/} , {a:"aa"}]
+  const t = [{ a: /a/ }, { a: 'aa' }]
   test({}, true, ...t)
-  test({allowRegExp: true}, true, ...t)
-  test({allowRegExp: false}, false, ...t)
+  test({ allowRegExp: true }, true, ...t)
+  test({ allowRegExp: false }, false, ...t)
 })
 
 describe('allowFunctions flag', () => {
-  const t = [{a:x=>toUpper(x)==="AA"} , {a:"aa"}]
+  const t = [{ a: x => toUpper(x) === 'AA' }, { a: 'aa' }]
   test({}, true, ...t)
-  test({allowFunctions: true}, true, ...t)
-  test({allowFunctions: false}, false, ...t)
+  test({ allowFunctions: true }, true, ...t)
+  test({ allowFunctions: false }, false, ...t)
+})
+
+describe('arrayWithFuncs', () => {
+  for (const arrayWhere of [
+    AW.arrayWhereAllOrdered,
+    AW.arrayWhereAllUnordered,
+    AW.arrayWhereAny,
+    AW.arrayWhereWithReplacement
+  ]) {
+    const opts = { arrayWhere }
+    test(opts, true, { a: [1] }, { a: [1, 2, 3] })
+    test(opts, false, { a: [4] }, { a: [1, 2, 3] })
+    test(opts, true, { a: [x => x === 1] }, { a: [1, 2, 3] })
+    test(opts, true, { a: [x => x === 1, x => x === 2, /3/] }, { a: [1, 2, 3] })
+    test(opts, false, { a: [x => x === 4] }, { a: [1, 2, 3] })
+    test({ allowFunctions: false, ...opts }, false, { a: [x => x === 1] }, { a: [1, 2, 3] })
+  }
+  test({ arrayWhere: AW.arrayWhereAny }, true, { a: [x => x === 4, x => x === 1] }, { a: [1, 2, 3] })
 })
